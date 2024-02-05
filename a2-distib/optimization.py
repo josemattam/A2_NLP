@@ -2,12 +2,13 @@
 
 import argparse
 import numpy as np
+
 import scipy.special
 import matplotlib.pyplot as plt
 
 ### 
 # IMPLEMENT ME! REPLACE WITH YOUR ANSWER TO PART 1B
-OPTIMAL_STEP_SIZE = 1.0
+OPTIMAL_STEP_SIZE = 0.12
 ###
 
 def _parse_args():
@@ -41,7 +42,9 @@ def quadratic_grad(x1, x2):
     :param x2: second coordinate
     :return: a one-dimensional numpy array containing two elements representing the gradient
     """
-    raise Exception("Implement me!")
+    dx1 = 2 * (x1 - 1)
+    dx2 = 16 * (x2 - 1)
+    return np.array([dx1, dx2])
 
 
 def sgd_test_quadratic(args):
@@ -58,7 +61,7 @@ def sgd_test_quadratic(args):
         grad = quadratic_grad(curr_point[0], curr_point[1])
         if len(grad) != 2:
             raise Exception("Gradient must be a two-dimensional array (vector containing [df/dx1, df/dx2])")
-        next_point = curr_point - args.lr * grad
+        next_point = curr_point - OPTIMAL_STEP_SIZE * grad # changed from args.lr to OPT
         points_history.append(curr_point)
         print("Point after epoch %i: %s" % (iter, repr(next_point)))
         curr_point = next_point
