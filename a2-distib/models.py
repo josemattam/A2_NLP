@@ -52,8 +52,19 @@ class NeuralSentimentClassifier(SentimentClassifier):
     method and you can optionally override predict_all if you want to use batching at inference time (not necessary,
     but may make things faster!)
     """
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(self, num_inputs, num_outputs, hidden_size, word_embeddings: WordEmbeddings):
+        super(NeuralSentimentClassifier, self).__init__()
+
+        self.linear1 = nn.Linear(num_inputs, hidden_size) 
+        self.linear2 = nn.Linear(hidden_size, num_outputs)
+
+        self.init_embedding = word_embeddings.get_initialized_embedding_layer(frozen= True)
+        
+
+    def forward(self, input):
+        linear = self.linear1(input)
+        output = nn.ReLU(linear)
+        prediction = self.linear2(output)
 
 
 def train_deep_averaging_network(args, train_exs: List[SentimentExample], dev_exs: List[SentimentExample],
@@ -68,5 +79,9 @@ def train_deep_averaging_network(args, train_exs: List[SentimentExample], dev_ex
     and return an instance of that for the typo setting if you want; you're allowed to return two different model types
     for the two settings.
     """
+    model = NeuralSentimentClassifier(word_embeddings, )
+
+    # for epoch in range(epochs):
+
     raise NotImplementedError
 
