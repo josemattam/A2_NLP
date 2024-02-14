@@ -107,23 +107,25 @@ def get_word_indices(sentence:List[str], indexer:Indexer):
 def train_deep_averaging_network(args, train_exs: List[SentimentExample], dev_exs: List[SentimentExample],
                                  word_embeddings: WordEmbeddings, train_model_for_typo_setting: bool) -> NeuralSentimentClassifier:
     model = NeuralSentimentClassifier(word_embeddings, word_embeddings.get_embedding_length(), args.hidden_size, 2)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)  
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)  
     loss = torch.nn.CrossEntropyLoss()     
     for epoch in range(args.num_epochs):
-        ex_indices = [i for i in range(0, len(train_exs))]
-        random.shuffle(ex_indices)
-        total_loss = 0.0
+            ex_indices = [i for i in range(0, len(train_exs))]
+            random.shuffle(ex_indices)
+            total_loss = 0.0
 
-        for i in ex_indices:
-            words = train_exs[i].words
-            label = train_exs[i].label
-            word_indices = get_word_indices(words, word_embeddings.word_indexer)
-            output = model(word_indices)
-            loss_val = loss(output.view(1,-1), torch.tensor([label]))
-                
-            total_loss += loss_val  
-            loss_val.backward() 
-            optimizer.zero_grad()        
-            optimizer.step()    
+            for idx in ex_indices:
+                sentence = train_exs[idx].words
+                label = train_exs[idx].label
+
+
+                word_indices = get_word_indices(sentence, word_embeddings.word_indexer)
+                output = model(word_indices)
+                loss_val = loss(output.view(1,-1), torch.tensor([label]))
+                total_loss += loss_val
+                optimizer.zero_grad()
+                loss_val.backward()
+                optimizer.step()
+
+            print("total loss for this epoch %i: %f" % (epoch, total_loss))
     return model
- 

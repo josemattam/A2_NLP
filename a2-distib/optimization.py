@@ -42,8 +42,8 @@ def quadratic_grad(x1, x2):
     :param x2: second coordinate
     :return: a one-dimensional numpy array containing two elements representing the gradient
     """
-    dx1 = 2 * (x1 - 1)
-    dx2 = 16 * (x2 - 1)
+    dx1 = 2.0 * (x1 - 1)
+    dx2 = 16.0 * (x2 - 1)
     return np.array([dx1, dx2])
 
 
